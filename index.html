@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app1"></div>
+        <div id="app2"></div>
+        <div id="app3"></div>
+    </body>
+    <script type="module">
+        import Watcher from "./watcher.js"
+        import reactive from "./reactive.js"
+        import watch from "./watch.js"
+        import computed from "./computed.js"
+        const data = reactive({
+            msg: "hello world",
+            number: 1,
+        })
+        new Watcher(() => {
+            document.getElementById("app1").innerHTML = `${data.msg}`
+        })
+        new Watcher(() => {
+            document.getElementById("app2").innerHTML = `${data.number}`
+        })
+        data.msg = "msg is changed"
+        watch(
+            () => data.number,
+            (oldValue, newValue) => {
+                console.log(oldValue, newValue)
+            }
+        )
+        data.number = 2
+        let s = "1"
+        const reverseMsg = computed(() => data.msg.split("").reverse().join(""))
+        new Watcher(() => {
+            document.getElementById("app3").innerHTML = `${reverseMsg.value}`
+        })
+        watch(
+            () => reverseMsg,
+            (oldValue, newValue) => {
+                console.log(oldValue, newValue)
+            }
+        )
+        data.msg = "just test"
+        console.log(reverseMsg)
+    </script>
+</html>
